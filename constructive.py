@@ -92,6 +92,6 @@ print('Tiempo = ', tiempo_total)
 
 #p.to_excel('archivo_prueba.xlsx',sheet_name='pandequeso', index = False, header = False)
 #FALTA POR HACER:
-## Añadir distancia recorrida por cada infividuo
+## Añadir distancia recorrida por cada individuo
 ## Añadir función objetivo
 ## Organizar información en dataframe
