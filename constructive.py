@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 #reading data
-df = pd.read_csv("TOP_instances_csv/TOP13.csv", sep=";")
+df = pd.read_csv("TOP_instances_csv/TOP1.csv", sep=";")
 data = df.to_numpy()
 
 #number of nodes
@@ -31,6 +31,7 @@ tmax = int(data[2][0]) / 10
 paths = [[0] for _ in range(num_travelers)]
 
 
+inicio = time.time()
 def dist_matrix(positions):
     dist = np.zeros((num_nodes, num_nodes))
     for i in range(num_nodes):
@@ -46,7 +47,7 @@ def ratio_matrix(distance_matrix, weights):
             if i == j:
                 ratio[i, j] = -1
             else:
-                ratio[i, j] = ((weights[i] - weights[j]) / (distance_matrix[i, j] + 1))
+                ratio[i, j] = weights[j] / (distance_matrix[i, j] + 1)
     return ratio
 
 
@@ -109,17 +110,15 @@ objetivo = 0
 for i in range(len(obj)):
     objetivo += obj[i]
 
-obj_por_ind = []
-suma = 0
-for i in range(num_travelers):
-    for j in range(len(rutas_final[i])):
-        suma += obj[j]
-    obj_por_ind.append(suma)
-    
+fin = time.time()
+tiempo = fin-inicio
+
+vector = [objetivo, tiempo]
+rutas_final.append(vector)
 dat = pd.DataFrame(rutas_final)
 print('Restricción: ', tmax)
 print('Distancias por individuo: ', distancias_por_ind)
 print('Rutas: \n', dat)
 print('Vector objetivo: ', obj)
 print('Función objetivo: ', objetivo)
-print('Función por individuo: \n', obj_por_ind)
+print('Tiempo: ', tiempo)
