@@ -63,7 +63,8 @@ def find_best_ratio(start_node, not_visited, ratio_matrix):
 
 
 def rutas(d, tmax):
-    d = dist_matrix(positions)
+    #dis = dist_matrix(positions)
+    #d = ratio_matrix(dis, weights)
     func_ob = []
     Tmax = [tmax for _ in range(num_travelers)]
     for i in range(len(Tmax)):
@@ -76,13 +77,14 @@ def rutas(d, tmax):
                                                              ratio_matrix=d)
                     a_path.append(next_node)
                     Tmax[trav] = Tmax[trav] - d[last_node][next_node]
-                    func_ob.append(weights[next_node])
+                    func_ob.append(float(weights[next_node]))
                     not_visited.remove(next_node)
     for trav in range(num_travelers):  # Agregar el último nodo a la lista después del ciclo
         a_path = paths[trav]
         a_path.append(num_nodes)
     return paths, func_ob
 
+#####################################################################################
 
 distancias = dist_matrix(positions=positions)
 relaciones = ratio_matrix(distance_matrix=distancias, weights=weights)
@@ -101,24 +103,28 @@ def distancia_total_recorr(rutas, mat_dis, vec_pes):
 
 
 distancias_por_ind = distancia_total_recorr(rutas=rutas_final, mat_dis=distancias, vec_pes=weights)
+fin = time.time()
+tiempo = 1000*(fin-inicio)
 
 # Presentación de datos
-for i, j in zip(rutas_final, distancias_por_ind):
-    i.append(j)
-
 objetivo = 0
 for i in range(len(obj)):
     objetivo += obj[i]
 
-fin = time.time()
-tiempo = fin-inicio
+aux = 0
+a = []
+for i in range(num_travelers):
+    tamano = len(rutas_final[i])-2
+    a.append(sum(obj[aux:(tamano + aux)]))
+    aux = tamano
+
+for i, j in zip(rutas_final, distancias_por_ind):
+    i.append(j)
+
+for i,j in zip(rutas_final, a):
+    i.append(j)
 
 vector = [objetivo, tiempo]
 rutas_final.append(vector)
 dat = pd.DataFrame(rutas_final)
-print('Restricción: ', tmax)
-print('Distancias por individuo: ', distancias_por_ind)
 print('Rutas: \n', dat)
-print('Vector objetivo: ', obj)
-print('Función objetivo: ', objetivo)
-print('Tiempo: ', tiempo)
